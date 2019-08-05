@@ -1,0 +1,18 @@
+[
+    {
+        "Recurringid": "null",
+        "Status": "Expired",
+        "CustomerUuid": "3018155734"
+    },
+    {
+        "Recurringid": "5c21962c-e889-40be-a246-02eaef8d9511",
+        "Status": "Expired",
+        "CustomerUuid": "3018155735"
+    },
+    {
+        "Recurringid": "5c21962c-e889-40be-a246-02eaef8d9512",
+        "NonSesitivePanToken": "CFCBCBAE-4CFD-43E0-816A-5E1A7BDCD3CB",
+        "Status": "Success",
+        "CustomerUuid": "3018155677"
+    }
+]
