@@ -68,34 +68,35 @@ namespace Json2DB
                 };
 
                 //option1
-                //foreach (var element in listComingFromFile)
-                //{
-                //    cmd.CommandText = "INSERT INTO [tescosubscription].[UpdateRecurringPaymentIntermediate] " +
-                //                      "(CustomerPaymentId, CustomerId, Status, InsertedDate, Filename) " +
-                //                      "VALUES (" + element.CustomerPaymentId + ", " + element.CustomerId + ", '" + element.Status +
-                //                      "', '" + DateTime.Now + "', '" + fileIntroducedByUser + "')";
+                foreach (var element in listComingFromFile)
+                {
+                    cmd.CommandText = "INSERT INTO [tescosubscription].[UpdateRecurringPaymentIntermediate] " +
+                                      "(CustomerId, Status, RecurringPaymentId, NonSensitivePanToken, InsertedDate, Filename) " +
+                                      "VALUES (" + element.CustomerId + ", '" + element.Status + "', '" + element.RecurringPaymentId + 
+                                      "', '" + element.NonSensitivePanToken + 
+                                      "', '" + DateTime.Now + "', '" + fileIntroducedByUser + "')";
 
-                //    try
-                //    {
-                //        cmd.ExecuteNonQuery();
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Console.WriteLine("Id: " + element.CustomerId + ". Description: " + ex.Message);
-                //    }
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Id: " + element.CustomerId + ". Description: " + ex.Message);
+                    }
 
-                //    responseModel.NumRowsUpdated++;
-                //}
+                    responseModel.NumRowsUpdated++;
+                }
 
 
                 //option2
-                var objectsDr = new DataReaderAdapter<DbModel>(listComingFromFile);
-                var bulkCopy = new SqlBulkCopy(connection)
-                {
-                    DestinationTableName = "[tescosubscription].[UpdateRecurringPaymentIntermediate]",
-                    BatchSize = 1000
-                };
-                bulkCopy.WriteToServer(objectsDr);
+                //var objectsDr = new DataReaderAdapter<DbModel>(listComingFromFile);
+                //var bulkCopy = new SqlBulkCopy(connection)
+                //{
+                //    DestinationTableName = "[tescosubscription].[UpdateRecurringPaymentIntermediate]",
+                //    BatchSize = 1000
+                //};
+                //bulkCopy.WriteToServer(objectsDr);
             }
             catch (SqlException ex)
             {
