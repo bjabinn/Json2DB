@@ -10,15 +10,23 @@ WHERE CustomerID IN (3018155734, 3018155735, 3018155677)
 ORDER BY CustomerPaymentID DESC  
 
 
+/*
+UPDATE [TescoSubscription].[tescosubscription].[CustomerPayment]
+SET IsActive = 1
+WHERE CustomerPaymentId  IN (232741,  232089, 231923)
+*/
+
+---query1
 UPDATE tI
-SET tI.CustomerPaymentId = ( SELECT TOP 1 [CustomerPaymentID]
+SET tI.PreviousToken = ( SELECT TOP 1 PaymentToken
                             FROM [TescoSubscription].[tescosubscription].[CustomerPayment] cp2
-                            WHERE cp2.[CustomerID] = cp.CustomerID AND [PaymentModeID] = 1
-                            ORDER BY [CustomerPaymentID] DESC), 
-    tI.PreviousToken = ( SELECT TOP 1 RecurringPaymentID
+                            WHERE cp2.[CustomerID] = cp.CustomerID AND [PaymentModeID] = 1  AND IsActive = 1
+                            ORDER BY [CustomerPaymentID] DESC),
+	tI.LastUpdateDate = GETDATE(),
+	tI.CustomerPaymentId = ( SELECT TOP 1 CustomerPaymentId
                             FROM [TescoSubscription].[tescosubscription].[CustomerPayment] cp2
-                            WHERE cp2.[CustomerID] = cp.CustomerID AND [PaymentModeID] = 1
-                            ORDER BY [CustomerPaymentID] DESC) 
+                            WHERE cp2.[CustomerID] = cp.CustomerID AND [PaymentModeID] = 1  AND IsActive = 1
+                            ORDER BY [CustomerPaymentID] DESC)
 FROM [TescoSubscription].[tescosubscription].[UpdateRecurringPaymentIntermediate] tI, 
      [TescoSubscription].[tescosubscription].[CustomerPayment] cp 
 WHERE tI.CustomerId = cp.CustomerID
@@ -33,9 +41,11 @@ DROP TABLE [TescoSubscription].[tescosubscription].[UpdateRecurringPaymentInterm
 
 CREATE TABLE [tescosubscription].[UpdateRecurringPaymentIntermediate](
 	[Id] [bigint] IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[CustomerPaymentId] [bigint] NOT NULL,
 	[CustomerId] [bigint] NOT NULL,
+	[CustomerPaymentId] [bigint] NULL,	
 	[Status] [nvarchar](50) NOT NULL,
+	[RecurringPaymentId] [nvarchar](50) NULL,
+	[NonSensitivePanToken] [nvarchar](50) NULL,
 	[Filename] [nvarchar](50) NOT NULL,
 	[InsertedDate] [datetime] NOT NULL,
     [PreviousToken] [nvarchar](50), 	
@@ -64,3 +74,14 @@ WHERE CustomerPaymentId = 231923
 DELETE 
 FROM [tescosubscription].[UpdateRecurringPaymentIntermediate]
 */
+
+
+
+
+----Query2
+UPDATE cp
+SET cp.PaymentToken = tI.NonSensitivePanToken,
+	cp.RecurringPaymentID = tI.RecurringPaymentId
+FROM [TescoSubscription].[tescosubscription].[UpdateRecurringPaymentIntermediate] tI, 
+     [TescoSubscription].[tescosubscription].[CustomerPayment] cp 
+WHERE tI.CustomerPaymentID = cp.CustomerPaymentID
